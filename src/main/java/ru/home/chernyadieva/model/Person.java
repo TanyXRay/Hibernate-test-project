@@ -17,8 +17,7 @@ import java.util.List;
 @Table(name = "Person")
 public class Person {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_person_id")
-    @SequenceGenerator(name = "generator_person_id", sequenceName = "person_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private int id;
@@ -33,6 +32,9 @@ public class Person {
     //@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE) // для работы с методом session.save(object)
     private List<Item> items;
 
+    @OneToOne(mappedBy = "person", cascade = CascadeType.PERSIST)
+    private Passport passport;
+
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
@@ -44,6 +46,17 @@ public class Person {
         }
         this.items.add(item);
         item.setOwner(this);
+    }
+
+    /**
+     * для выстраивания двусторонней связи с person
+     *
+     * @param passport
+     */
+    public void setPassport(Passport passport) {
+        this.passport = passport;
+        passport.setPerson(this);
+
     }
 
     @Override
