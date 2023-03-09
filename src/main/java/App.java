@@ -1,9 +1,7 @@
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import ru.home.chernyadieva.model.Item;
-import ru.home.chernyadieva.model.Passport;
-import ru.home.chernyadieva.model.Person;
+import ru.home.chernyadieva.model.*;
 
 public class App {
 
@@ -11,12 +9,14 @@ public class App {
         Configuration configuration = new Configuration()
                 .addAnnotatedClass(Person.class)
                 .addAnnotatedClass(Item.class)
-                .addAnnotatedClass(Passport.class);
+                .addAnnotatedClass(Passport.class)
+                .addAnnotatedClass(Actor.class)
+                .addAnnotatedClass(Movie.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
         Session session = sessionFactory.getCurrentSession();
 
-        try {
+        try (sessionFactory) {
             session.beginTransaction();
 
             //Person person = (Person) session.createQuery("FROM Person WHERE name='Bob'").getSingleResult();
@@ -46,18 +46,29 @@ public class App {
             // session.persist(person);
             //session.save(person); // деприкат!
             //---------------------------------------------------------------
-          Person person = new Person("Test888", 42);
-          Passport passport = new Passport(145237);
+            //Person person = new Person("Test888", 42);
+            //Passport passport = new Passport(145237);
 
-          person.setPassport(passport);
-          session.persist(person);
+            //person.setPassport(passport);
+            //session.persist(person);
+            //---------------------------------------------------------------
+            Actor actor1 = new Actor("Tom Bekov", 25);
+           //Actor actor2 = new Actor("Alice McGonel", 30);
 
-         //Person person = session.get(Person.class, 14);
-        // session.remove(person);
+           //Movie movie = new Movie("Magica", 1998);
+           //movie.addActorInList(actor1);
+           //movie.addActorInList(actor2);
+
+           //actor1.addMovieInList(movie);
+           //actor2.addMovieInList(movie);
+
+           //session.persist(movie);
+           //session.persist(actor1);
+           //session.persist(actor2);
+            Actor actor = session.get(Actor.class,3);
+            session.remove(actor);
 
             session.getTransaction().commit();
-        } finally {
-            sessionFactory.close();
         }
     }
 }
